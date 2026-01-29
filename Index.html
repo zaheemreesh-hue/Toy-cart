@@ -352,4 +352,74 @@
         }
 
         // Add item to cart
-     
+        function addToCart(product) {
+            const existingItem = cart.find(item => item.name === product.name);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+            
+            updateCart();
+        }
+
+        // Update cart display
+        function updateCart() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            cartCount.textContent = totalItems;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-sm text-gray-600">₹${item.price.toLocaleString('en-IN')} × ${item.quantity}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-purple-600">₹${(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                            <button onclick="removeFromCart('${item.name}')" class="text-xs text-red-500 hover:text-red-700">Remove</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            cartTotal.textContent = '₹' + totalPrice.toLocaleString('en-IN');
+        }
+
+        // Remove from cart
+        function removeFromCart(productName) {
+            cart = cart.filter(item => item.name !== productName);
+            updateCart();
+        }
+
+        // Toggle cart drawer
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Submit review
+        function submitReview(event) {
+            event.preventDefault();
+            alert('Thank you for your review! Your feedback helps other parents make informed decisions.');
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>
